@@ -1,4 +1,4 @@
-from flask import Flask,jsonify, request
+from flask import Flask,jsonify, request, render_template   
 from flask_cors import CORS
 
 
@@ -69,7 +69,9 @@ def upload():
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({'message': 'Server Run!'})
+     # Página principal
+    return render_template('index.html')
+    # return jsonify({'message': 'Server Run!'})
   
 
 
