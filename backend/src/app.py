@@ -42,6 +42,9 @@ def model_predict(img_path, model):
 def index():
     return jsonify({'message': 'Server Run!'})
 
+@app.route('/hello', methods=['GET'])
+def hello():
+    return jsonify({'message': 'Hello World!'})
 
 @app.route('/upload', methods=['POST'])
 def load_image():
@@ -74,4 +77,7 @@ def send_image():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
+    #Debug
+    # app.run(debug=True, port=5000)
