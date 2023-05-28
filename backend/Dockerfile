@@ -6,6 +6,7 @@ WORKDIR /code
 # set environment variables
 ENV FLASK_APP=src/app.py
 ENV FLASK_RUN_HOST=0.0.0.0
+ENV PORT=5000
 
 # install dependencies
 RUN apt-get update
@@ -24,4 +25,5 @@ EXPOSE 5000
 COPY . .
 
 # run app
-CMD ["flask", "run", "--port=5000"]
+# CMD ["flask", "run", "--port=5000"]
+CMD [ "python3", "src/app.py"]
