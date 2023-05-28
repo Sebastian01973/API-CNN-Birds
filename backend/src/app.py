@@ -1,4 +1,4 @@
-from flask import Flask,jsonify, request, render_template   
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 
 
@@ -22,7 +22,7 @@ names = ['AFRICAN EMERALD CUCKOO', 'AFRICAN OYSTER CATCHER', 'AMERICAN COOT',
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 
 path_actual = os.path.dirname(os.path.abspath(__file__))
@@ -33,48 +33,70 @@ model = load_model(f"{path_actual}/models/model.h5")
 print('Modelo cargado exitosamente. Verificar en consola.')
 
 # Realizamos la predicción usando la imagen cargada y el modelo
+
+
 def model_predict(img_path, model):
 
-    img=cv2.resize(cv2.imread(img_path), (width_shape, height_shape), interpolation = cv2.INTER_AREA)
-    x=np.asarray(img)
-    x=preprocess_input(x)
-    x = np.expand_dims(x,axis=0)
-    
+    img = cv2.resize(cv2.imread(img_path), (width_shape,
+                     height_shape), interpolation=cv2.INTER_AREA)
+    x = np.asarray(img)
+    x = preprocess_input(x)
+    x = np.expand_dims(x, axis=0)
+
     preds = model.predict(x)
     return preds
 
-@app.route('/predict', methods=['GET', 'POST'])
+
+@app.route('/predict', methods=['POST'])
 def upload():
-    if request.method == 'POST':
-        # Obtiene el archivo del request
-        f = request.files['file']
 
-        # Graba el archivo en ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
+    # Obtiene el archivo del request
+    f = request.files['file']
 
-        # Predicción
-        preds = model_predict(file_path, model)
+    print('FILE LOAD')
+    # Graba el archivo en ./uploads
+    basepath = os.path.dirname(__file__)
+    file_path = os.path.join(
+        basepath, 'uploads', secure_filename(f.filename))
+    f.save(file_path)
 
-        print('PREDICCIÓN', names[np.argmax(preds)])
-        
-        # Enviamos el resultado de la predicción
-        result = str(names[np.argmax(preds)])              
-        return result
-    return None
+    # Predicción
+    preds = model_predict(file_path, model)
+
+    print('PREDICCIÓN', names[np.argmax(preds)])
+
+    # Enviamos el resultado de la predicción
+    result = str(names[np.argmax(preds)])
+    return jsonify({'result': result})
 
 ### ENDPOINTS ###
 
+
 @app.route('/', methods=['GET'])
 def index():
-     # Página principal
-    return render_template('index.html')
-    # return jsonify({'message': 'Server Run!'})
-  
+    # return render_template('index.html')
+    return jsonify({'message': 'Server Run!'})
 
 
+@app.route('/upload', methods=['POST'])
+def load_image():
+    data = request.files['image']
+    
+    # Graba el archivo en ./uploads
+    basepath = os.path.dirname(__file__)
+    print("Base: ",basepath)
+    
+    file_path = os.path.join(
+        basepath, 'uploads', secure_filename(data.filename))
+    data.save(file_path)
+    
+    # Predicción
+    preds = model_predict(file_path, model)
+    print('PREDICCIÓN', names[np.argmax(preds)])
+    result = str(names[np.argmax(preds)])
+    
+    return jsonify({'result': result})
+    
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)   
+    app.run(debug=True, port=5000)
