@@ -1,15 +1,12 @@
-from flask import Flask, jsonify, request, render_template
-from flask_cors import CORS
-
-
 import os
 import numpy as np
 import cv2
-
+# Import Flask
+from flask import Flask, jsonify, request, Response
+from flask_cors import CORS
 # Keras
 from keras.models import load_model
 from keras.applications.imagenet_utils import preprocess_input
-
 from werkzeug.utils import secure_filename
 
 
@@ -20,23 +17,16 @@ names = ['AFRICAN EMERALD CUCKOO', 'AFRICAN OYSTER CATCHER', 'AMERICAN COOT',
          'APOSTLEBIRD', 'ASIAN CRESTED IBIS', 'AUSTRAL CANASTERO',
          ]
 
-
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-
 path_actual = os.path.dirname(os.path.abspath(__file__))
-
-
 model = load_model(f"{path_actual}/models/model.h5")
+print('Modelo cargado exitosamente.')
 
-print('Modelo cargado exitosamente. Verificar en consola.')
 
 # Realizamos la predicción usando la imagen cargada y el modelo
-
-
 def model_predict(img_path, model):
-
     img = cv2.resize(cv2.imread(img_path), (width_shape,
                      height_shape), interpolation=cv2.INTER_AREA)
     x = np.asarray(img)
@@ -47,56 +37,41 @@ def model_predict(img_path, model):
     return preds
 
 
-@app.route('/predict', methods=['POST'])
-def upload():
-
-    # Obtiene el archivo del request
-    f = request.files['file']
-
-    print('FILE LOAD')
-    # Graba el archivo en ./uploads
-    basepath = os.path.dirname(__file__)
-    file_path = os.path.join(
-        basepath, 'uploads', secure_filename(f.filename))
-    f.save(file_path)
-
-    # Predicción
-    preds = model_predict(file_path, model)
-
-    print('PREDICCIÓN', names[np.argmax(preds)])
-
-    # Enviamos el resultado de la predicción
-    result = str(names[np.argmax(preds)])
-    return jsonify({'result': result})
-
 ### ENDPOINTS ###
-
-
 @app.route('/', methods=['GET'])
 def index():
-    # return render_template('index.html')
     return jsonify({'message': 'Server Run!'})
 
 
 @app.route('/upload', methods=['POST'])
 def load_image():
     data = request.files['image']
-    
+
     # Graba el archivo en ./uploads
     basepath = os.path.dirname(__file__)
-    print("Base: ",basepath)
-    
+
     file_path = os.path.join(
         basepath, 'uploads', secure_filename(data.filename))
     data.save(file_path)
-    
+
     # Predicción
     preds = model_predict(file_path, model)
-    print('PREDICCIÓN', names[np.argmax(preds)])
     result = str(names[np.argmax(preds)])
-    
+
     return jsonify({'result': result})
+
+
+@app.route('/clean_uploads', methods=['GET'])
+def send_image():
+    # Elimina los archivos de ./uploads
+    # Falta probarlo en el servidor
+    basepath = os.path.dirname(__file__)
+    file_path = os.path.join(basepath, 'uploads')
+    for file in os.listdir(file_path):
+        os.remove(os.path.join(file_path, file))
     
+    return jsonify({'message': 'Clean Uploads!'}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

@@ -43,8 +43,7 @@ const Home = ({galleryImages}) => {
   }
 
   return (
-    <div>
-
+    <div className="container">
       {openModal && 
         <div className='sliderWrap'>
           <FontAwesomeIcon icon={faCircleXmark} className='btnClose' onClick={handleCloseModal}  />
@@ -56,13 +55,8 @@ const Home = ({galleryImages}) => {
         </div>
       }
 
-      {/* <br />
-      Current slide number:  {slideNumber}
-      <br />
-      Total Slides: {galleryImages.length}
-      <br /><br /> */}
-
       <div className='galleryWrap'>
+        
         {
           galleryImages && galleryImages.map((slide, index) => {
             return(

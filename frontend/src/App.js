@@ -37,9 +37,6 @@ class App extends Component {
         img: "/img/8.jpg",
       },
       {
-        img: "/img/9.jpg",
-      },
-      {
         img: "/img/10.jpg",
       },
     ];

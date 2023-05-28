@@ -77,9 +77,8 @@ const ImageUpload = () => {
         </div>
       </div>
       <div className="container">
-        {isData && <PredictionModel imageURL={image} prediction={prediction} />}
-        \\
-        
+      {/* Validar que se hace cuando no se sube una imagen */}
+        {isData && <PredictionModel imageURL={image} prediction={prediction} />}  
       </div>
     </div>
   );
