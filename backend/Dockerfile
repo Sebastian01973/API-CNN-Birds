@@ -24,4 +24,5 @@ EXPOSE 5000
 COPY . .
 
 # run app
-CMD ["flask", "run", "--port=5000"]
+# CMD ["flask", "run", "--port=5000"]
+CMD [ "python3", "src/app.py"]
