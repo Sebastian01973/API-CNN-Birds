@@ -49,24 +49,22 @@ def hello():
 
 
 @app.route('/upload', methods=['POST'])
-def load_image():
+def load_image(): 
+    data = request.files['image']
     
-    try:
-        data = request.files['image']
-        # Graba el archivo en ./uploads
-        basepath = os.path.dirname(__file__)
+    # Graba el archivo en ./uploads
+    basepath = os.path.dirname(__file__)
 
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(data.filename))
-        data.save(file_path)
+    file_path = os.path.join(
+        basepath, 'uploads', secure_filename(data.filename))
+    data.save(file_path)
 
-        # Predicción
-        preds = model_predict(file_path, model)
-        result = str(names[np.argmax(preds)])
+    # Predicción
+    preds = model_predict(file_path, model)
+    result = str(names[np.argmax(preds)])
 
-        return jsonify({'result': result})
-    except Exception as e:
-        return jsonify({'message': 'Error al cargar la imagen.'}), 400
+    return jsonify({'result': result})
+    
 
 
 @app.route('/clean_uploads', methods=['GET'])
