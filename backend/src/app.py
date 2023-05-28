@@ -42,44 +42,52 @@ def model_predict(img_path, model):
 def index():
     return jsonify({'message': 'Server Run!'})
 
+
 @app.route('/hello', methods=['GET'])
 def hello():
     return jsonify({'message': 'Hello World!'})
 
+
 @app.route('/upload', methods=['POST'])
 def load_image():
-    data = request.files['image']
+    
+    try:
+        data = request.files['image']
+        # Graba el archivo en ./uploads
+        basepath = os.path.dirname(__file__)
 
-    # Graba el archivo en ./uploads
-    basepath = os.path.dirname(__file__)
+        file_path = os.path.join(
+            basepath, 'uploads', secure_filename(data.filename))
+        data.save(file_path)
 
-    file_path = os.path.join(
-        basepath, 'uploads', secure_filename(data.filename))
-    data.save(file_path)
+        # Predicción
+        preds = model_predict(file_path, model)
+        result = str(names[np.argmax(preds)])
 
-    # Predicción
-    preds = model_predict(file_path, model)
-    result = str(names[np.argmax(preds)])
-
-    return jsonify({'result': result})
+        return jsonify({'result': result})
+    except Exception as e:
+        return jsonify({'message': 'Error al cargar la imagen.'}), 400
 
 
 @app.route('/clean_uploads', methods=['GET'])
-def send_image():
+def clean():
     # Elimina los archivos de ./uploads
     # Falta probarlo en el servidor
     basepath = os.path.dirname(__file__)
     file_path = os.path.join(basepath, 'uploads')
     for file in os.listdir(file_path):
         os.remove(os.path.join(file_path, file))
-    
+
     return jsonify({'message': 'Clean Uploads!'}), 200
 
 
 def create_app():
     return app
 
+
 if __name__ == '__main__':
-    # from waitress import serve
-    # serve(app, host='0.0.0.0', port=5000)
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = os.getenv('PORT')
+    if(port == None):
+        print("Error on $PORT env variable")
+    else:
+        app.run(host="0.0.0.0", port=int(port), debug=True)

@@ -6,6 +6,7 @@ WORKDIR /code
 # set environment variables
 ENV FLASK_APP=src/app.py
 ENV FLASK_RUN_HOST=0.0.0.0
+ENV PORT=5000
 
 # install dependencies
 RUN apt-get update
