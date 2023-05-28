@@ -1,14 +1,15 @@
-FROM python:3.8-alpine
+FROM python:3.10-slim-buster
 
 # set work directory
 WORKDIR /code
 
 # set environment variables
-ENV FLASK_APP=src/main.py
+ENV FLASK_APP=src/app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # install dependencies
-RUN apk add --no-cache gcc musl-dev linux-headers
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 # copy requeriments.txt
 COPY requirements.txt requirements.txt
