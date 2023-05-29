@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 # Import Flask
 from flask import Flask, jsonify, request, Response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 # Keras
 from keras.models import load_model
 from keras.applications.imagenet_utils import preprocess_input
@@ -48,6 +48,7 @@ def hello():
     return jsonify({'message': 'Hello World!'})
 
 
+@cross_origin
 @app.route('/upload', methods=['POST'])
 def load_image(): 
     data = request.files['image']
