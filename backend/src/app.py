@@ -48,22 +48,24 @@ def hello():
     return jsonify({'message': 'Hello World!'})
 
 
+image_tmp = f"{os.path.dirname(os.path.abspath(__file__))}/uploads/saveImage.jpg"
+
 # @cross_origin
 @app.route('/upload', methods=['POST'])
 def load_image(): 
     data = request.files['image']
+    data.save(image_tmp)
     
     # Graba el archivo en ./uploads
-    basepath = os.path.dirname(__file__)
+    # basepath = os.path.dirname(__file__)
 
-    file_path = os.path.join(
-        basepath, 'uploads', secure_filename(data.filename))
-    data.save(file_path)
+    # file_path = os.path.join(
+    #     basepath, 'uploads', secure_filename(data.filename))
+    # data.save(file_path)
 
     # Predicción
-    preds = model_predict(file_path, model)
+    preds = model_predict(image_tmp, model)
     result = str(names[np.argmax(preds)])
-
     return jsonify({'result': result})
     
 
