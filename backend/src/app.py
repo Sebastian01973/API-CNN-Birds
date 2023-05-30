@@ -18,7 +18,7 @@ names = ['AFRICAN EMERALD CUCKOO', 'AFRICAN OYSTER CATCHER', 'AMERICAN COOT',
          ]
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 path_actual = os.path.dirname(os.path.abspath(__file__))
 model = load_model(f"{path_actual}/models/model.h5")
@@ -48,7 +48,7 @@ def hello():
     return jsonify({'message': 'Hello World!'})
 
 
-@cross_origin
+# @cross_origin
 @app.route('/upload', methods=['POST'])
 def load_image(): 
     data = request.files['image']

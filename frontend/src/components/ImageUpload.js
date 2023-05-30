@@ -9,8 +9,9 @@ const ImageUpload = () => {
   const [image, setImage] = useState(null);
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
-
   const [isData, setIsData] = useState(false);
+  const [newImage,setNewImage] = useState(null)
+
 
   const handleChange = (e) => {
     setImage(e.target.files[0]);
@@ -19,7 +20,6 @@ const ImageUpload = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     // No permite que se haga submit sin foto 
     if (!image) {
       alert("Please upload an image");
@@ -30,9 +30,8 @@ const ImageUpload = () => {
     const formData = new FormData();
     formData.append("image", image);
 
-    console.log(formData);
-
-    const res = await axios.post("https://api-birds-production.up.railway.app/upload", formData, {
+    //Peticion al servidor
+    const res = await axios.post("http://localhost:5000//upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -45,7 +44,9 @@ const ImageUpload = () => {
 
     setLoading(false);
     setUploadPercentage(0);
-    setPrediction(res.data);
+    // Aca debo pasarle la imagen al componente hijo prediction
+    setNewImage(image)
+    setPrediction(res.data.result);
     setIsData(true);
   };
 
@@ -87,7 +88,7 @@ const ImageUpload = () => {
         <div className="col-md-6">
           {/* Validar que se hace cuando no se sube una imagen */}
           {isData && (
-            <PredictionModel imageURL={image} prediction={prediction} />
+            <PredictionModel imageURL={newImage} prediction={prediction} />
           )}
         </div>
       </div>
