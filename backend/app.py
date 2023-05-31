@@ -61,7 +61,7 @@ def load_image():
     # Predicción
     preds = model_predict(image_tmp, model)
     result = str(names[np.argmax(preds)])
-    return jsonify({'result': result})
+    return jsonify({'result': result}), 200
     
 
 
