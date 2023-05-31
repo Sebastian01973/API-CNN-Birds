@@ -31,7 +31,7 @@ const ImageUpload = () => {
     formData.append("image", image);
 
     //Peticion al servidor
-    const res = await axios.post("http://localhost:5000//upload", formData, {
+    const res = await axios.post("https://api-birds-production.up.railway.app/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
