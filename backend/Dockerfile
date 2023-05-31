@@ -26,4 +26,4 @@ COPY . .
 
 # run app
 # CMD ["flask", "run", "--port=5000"]
-CMD [ "python3", "src/app.py"]
+CMD [ "python3", "app.py"]
