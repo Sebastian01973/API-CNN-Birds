@@ -4,7 +4,7 @@ const PredictionModel = (props) => {
 
   const { imageURL, prediction } = props;
 
-  console.log("A ver que pasa: ",imageURL);
+  // console.log("A ver que pasa: ",imageURL);
 
   // Esperar que se haga el submir para actualizar los props
 

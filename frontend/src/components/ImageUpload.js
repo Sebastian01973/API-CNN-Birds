@@ -30,23 +30,25 @@ const ImageUpload = () => {
     const formData = new FormData();
     formData.append("image", image);
 
-    //Peticion al servidor
-    const res = await axios.post("https://api-birds-production.up.railway.app/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    //Peticion al servidorddd
+    await axios.post("https://api-birds-production.up.railway.app/upload", formData, {
       onUploadProgress(progressEvent) {
         const { loaded, total } = progressEvent;
         let percent = parseInt((loaded * 100) / total);
         setUploadPercentage(percent);
       },
-    });
+    }).then(res => {
+      setPrediction(res.data.result)
+    }).catch(err => {
+      console.log(err)
+      
+    })
 
-    setLoading(false);
+    console.log("Paso...");
+    await setNewImage(image)
+    await setLoading(false);
     setUploadPercentage(0);
-    // Aca debo pasarle la imagen al componente hijo prediction
-    setNewImage(image)
-    setPrediction(res.data.result);
+    
     setIsData(true);
   };
 
