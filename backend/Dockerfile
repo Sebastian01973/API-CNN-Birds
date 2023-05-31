@@ -4,7 +4,7 @@ FROM python:3.10-slim-buster
 WORKDIR /code
 
 # set environment variables
-ENV FLASK_APP=src/app.py
+ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV PORT=5000
 
