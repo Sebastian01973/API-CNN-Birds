@@ -21,7 +21,7 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 path_actual = os.path.dirname(os.path.abspath(__file__))
-model = load_model(f"{path_actual}/models/model.h5")
+model = load_model(f"{path_actual}/src/models/model.h5")
 print('Modelo cargado exitosamente.')
 
 
@@ -48,13 +48,15 @@ def hello():
     return jsonify({'message': 'Hello World!'})
 
 
-image_tmp = f"{os.path.dirname(os.path.abspath(__file__))}/uploads/saveImage.jpg"
+image_tmp = f"{os.path.dirname(os.path.abspath(__file__))}/src/uploads/saveImage.jpg"
 
 # @cross_origin
 @app.route('/upload', methods=['POST'])
 def load_image(): 
     data = request.files['image']
-    data.save(image_tmp)
+    return jsonify({'message': 'Image Uploaded!'}),200
+    
+    # data.save(image_tmp)
     
     # Graba el archivo en ./uploads
     # basepath = os.path.dirname(__file__)
@@ -64,9 +66,9 @@ def load_image():
     # data.save(file_path)
 
     # Predicción
-    preds = model_predict(image_tmp, model)
-    result = str(names[np.argmax(preds)])
-    return jsonify({'result': result})
+    # preds = model_predict(image_tmp, model)
+    # result = str(names[np.argmax(preds)])
+    # return jsonify({'result': result})
     
 
 
